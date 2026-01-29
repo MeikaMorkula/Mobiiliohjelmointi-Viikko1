@@ -1,5 +1,7 @@
 package com.example.viikko1.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,21 +27,27 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.viikko1.domain.Task
 import com.example.viikko1.domain.TaskViewModel
+import androidx.compose.runtime.collectAsState
+import java.time.LocalDate
 
 
 @Composable
-fun HomeScreen(viewModel: TaskViewModel = viewModel())
-{
-    var tasktitle by remember { mutableStateOf("")}
-    val taskList = viewModel.tasks;
+fun HomeScreen(viewModel: TaskViewModel = viewModel()) {
+    var tasktitle by remember { mutableStateOf("") }
+    val taskList by viewModel.tasks.collectAsState()
+
+    var currentTask by remember { mutableStateOf<Task?>(null) }
+
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Spacer(Modifier.height(14.dp))
         TaskNameField(
-            title =tasktitle,
-            onTitleChange = {tasktitle = it}
+            title = tasktitle,
+            onTitleChange = { tasktitle = it }
         )
         Spacer(Modifier.height(14.dp))
         Row()
@@ -49,9 +56,22 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel())
             Button(
                 onClick = {
 
-                    viewModel.addTask(tasktitle);
+                    viewModel.addTask(
+                        Task(
+                            id = taskList.size + 1,
+                            title = tasktitle,
+                            priority = 2,
+                            dueDate = LocalDate.now().toString(),
+                            description = "",
+                            done = false
+                        )
+
+                    );
+
+
+                    tasktitle = " ";
                 },
-                content= {
+                content = {
                     Text("Add new task");
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -61,13 +81,16 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel())
             )
         }
 
-        LazyColumn(modifier = Modifier.weight(1f)
-            .fillMaxWidth()) {
-            items(taskList){task ->
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            items(taskList) { task ->
                 ItemRow(
-                    onToggleState = {viewModel.toggleDone(task.id)},
-                    item=task,
-                    onItemdelete = {viewModel.removeTask(task.id)}
+                    onToggleState = { viewModel.toggleDone(task.id) },
+                    item = task,
+                    onClick = { currentTask = task }
                 )
 
             }
@@ -79,7 +102,7 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel())
                 onClick = {
                     viewModel.sortTasksByDueDate();
                 },
-                content= {
+                content = {
                     Text("Sort by date");
                 }
             )
@@ -87,11 +110,19 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel())
                 onClick = {
                     viewModel.sortTasksByDone(false);
                 },
-                content= {
+                content = {
                     Text("Sort by Done");
                 }
 
             )
+
+            currentTask?.let { task ->
+                Details(
+                    task = task,
+                    taskViewModel = viewModel,
+                    onDismiss = { currentTask = null }
+                )
+            }
         }
     }
 }
@@ -100,32 +131,27 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel())
 fun ItemRow(
     item: Task,
     onToggleState: () -> Unit,
-    onItemdelete: ()-> Unit
-)
-{
+    onClick: () -> Unit
+) {
 
     Spacer(Modifier.height(10.dp))
-    Row(modifier = Modifier.fillMaxWidth())
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFE3F2FD))
+            .clickable { onClick() })
     {
 
         Checkbox(
             checked = item.done,
-            {onToggleState()}
+            { onToggleState() }
         )
 
         Column(modifier = Modifier.weight(1f)) {
             Text("${item.id}")
-            Text(" Title: ${item.title}" )
+            Text(" Title: ${item.title}")
             Text("Priority: ${item.priority}")
             Text("Due date: ${item.dueDate}")
-        }
-
-        Button(onClick = onItemdelete,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Red
-        ))
-        {
-            Text("delete")
         }
 
 
@@ -135,13 +161,12 @@ fun ItemRow(
 @Composable
 fun TaskNameField(
     title: String,
-    onTitleChange: (String)-> Unit
-)
-{
+    onTitleChange: (String) -> Unit
+) {
     OutlinedTextField(
-        value=title,
+        value = title,
         onValueChange = onTitleChange,
-        label= {Text("Task name")}
+        label = { Text("Task name") }
 
     )
 }
