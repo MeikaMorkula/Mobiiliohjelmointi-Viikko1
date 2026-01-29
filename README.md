@@ -1,4 +1,4 @@
-# Mobiiliohjelmointi-Viikko2
+# Mobiiliohjelmointi-Viikko3
 
 Tämä sovellus on simppeli android tehtävälista sovellus.
 
@@ -21,6 +21,19 @@ Sovelluksen alareunassa on kolme filtteröintinappia.
 
 Selitä, miten Compose-tilanhallinta toimii:
 Compose-tilanhallinta pitää UI-ta tilan funktiona, joka johtaa siihen, että kun tila muuttuu, Compose piirtään UI:n automaattisesti uudelleen.
+
+
+Selitä MVVM, miksi se on hyödyllinen Compose-sovelluksissa.
+
+Model-View-ViewModel (MVVM) on suunnittelumalli joka eriyttää sovelluksen eri kerroksiin. View sisältää UI:n ja käyttäjän vuorovaikutuksen, ViewModel sisältää UI-logiikan ja tilanhallinan ja model sisältää liiketoimintalogiikan ja datan. Tämä on hyödyllistä siksi, että UI-uudelleenpiirretään automaattisesti kun tilat muuttuvat, mutta data säilyy. MVVM myös selkeyttää koodia.
+
+Kerro miten StateFlow toimii.
+
+Stateflow on muuttuja jota UI kuuntelee. Kun StateFlown tila muuttuu UI päivityy automaattisesti. 
+
+
+
+
 
 Kerro, miksi ViewModel on parempi kuin pelkkä remember:
 
