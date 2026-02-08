@@ -1,4 +1,4 @@
-# Mobiiliohjelmointi-Viikko3
+# Mobiiliohjelmointi-Viikko 4
 
 Tämä sovellus on simppeli android tehtävälista sovellus.
 
@@ -32,11 +32,28 @@ Kerro miten StateFlow toimii.
 Stateflow on muuttuja jota UI kuuntelee. Kun StateFlown tila muuttuu UI päivityy automaattisesti. 
 
 
-
-
-
 Kerro, miksi ViewModel on parempi kuin pelkkä remember:
 
 remember muuttujat tuhotaan, aina kun UI päivittyy, kun taas ViewModel muuttujat säilyvät UI:n uudelleenpiirrosta
+
+
+Mitä tarkoittaa navigointi Jetpack Composessa:
+  Jetpack composessa navigointi tarkoittaa eri käyttöliittymä screenien välillä siirtymistä
+
+Mitä ovat NavHost ja NavController:
+  NavController vastaa navigoinnin ohjaamisestä, esim ruutujen välillä siirtymisestä ja takaisin menosta
+  NavHost vastaa sovelluksen navigointirakenteesta, se yhdistää routet composable funktioihin.
+
+Miten MVVM ja navigointi yhdistyvät (yksi ViewModel kahdelle screenille:
+    Homescreen ja Calendar screen käyttävät samaa viewmodelia, joka annetaan molemmille näkymille parametreina. Viewmodel luodaan mainActivityssä navHosin yläpuollella.
+
+Miten ViewModelin tila jaetaan kummankin ruudun välillä:
+  ViewModeli sisältää tehtävät-tilan, joka on toteutettu stateflow:lla. Kun tehtävien tila muuttuu, niin myös Homescreen ja CalendarScreen päivittyvät automattisesti viewmodelin kautta:
+
+Miten CalendarScreen on toteutettu (miten tehtävät ryhmitellään / esitetään kalenterimaisesti):
+  Tehtävät ryhmitellään deadlinen mukaan, näkymässä näkyy päivämäärä (esim: 2026-2-2 ja sen alla sille päivälle merkatut tehtävät.
+
+Miten AlertDialog hoitaa addTask ja editTask:
+  AlertDiagog käyttää samaa komponenttia sekä taskin lisäämiseen ja muokkaukseen. Jos taskilla ei ole id:tä, niin alertDialog näyttää taskin lisäämiseen tarvittavat kentät, jos taas taskilla on Id: niin taskile näytetään muokkaus ja poistoominaisuudet.
 
 
